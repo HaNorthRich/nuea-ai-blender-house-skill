@@ -39,18 +39,26 @@ blender -b --factory-startup --python-exit-code 1 -P build_all.py      # → ../
 ## ต้องมีอะไรบ้าง
 
 - Claude Code
-- Blender 4.2 ขึ้นไป (ทดสอบบน 5.2.1)
-- Blender MCP add-on: ติดตั้งด้วย `uvx mcp-for-blender install-addon` (ต้องมี [uv](https://docs.astral.sh/uv/))
-  แล้วเปิด add-on ใน Blender และกด Start MCP Server
+- Blender 4.2 ขึ้นไป (ทดสอบบน 5.2.1) คำสั่ง `blender` ในหน้านี้บน Mac คือ
+  `/Applications/Blender.app/Contents/MacOS/Blender` (หรือตั้ง alias ไว้)
+- [uv](https://docs.astral.sh/uv/) (ใช้คำสั่ง `uvx`)
+- [MCP for Blender](https://github.com/ahujasid/blender-mcp) ที่ต่อ Claude Code เข้ากับ Blender
 
 ## ติดตั้ง
 
 ```bash
+# 1. Skill
 git clone https://github.com/HaNorthRich/nuea-ai-blender-house-skill.git
+mkdir -p ~/.claude/skills
 cp -R nuea-ai-blender-house-skill/nuea-ai-blender-house ~/.claude/skills/
+
+# 2. Blender MCP: add-on ฝั่ง Blender และ server ฝั่ง Claude Code (ใช้ได้ทุกโปรเจกต์)
+uvx mcp-for-blender install-addon
+claude mcp add --scope user blender uvx mcp-for-blender
 ```
 
-เปิด Claude Code ใหม่ Skill จะโหลดเองเมื่อสั่งงานที่เกี่ยวข้อง
+เปิด Blender แล้วเปิด add-on และกด Start MCP Server จากนั้นเปิด Claude Code ใหม่ แล้วสั่งว่า "เช็กสถานะ Blender"
+ถ้า Claude ตอบเวอร์ชันของ Blender ได้ แปลว่าต่อกันแล้ว Skill จะโหลดเองเมื่อสั่งงานที่เกี่ยวข้อง
 
 ## ลองสั่งแบบนี้
 
@@ -83,7 +91,8 @@ materials, furniture, renders) or construction models built stage by stage in re
 at its product's size, each stage read back by a selfcheck and guarded by a mutation test suite. The full worked
 example (a 42 m² house, `examples/e42/`) builds from an empty Blender with every check passing:
 `blender -b --factory-startup --python-exit-code 1 -P nuea-ai-blender-house/examples/e42/scripts/build_all.py`. Install by copying `nuea-ai-blender-house/` into
-`~/.claude/skills/`. Quantities need a qualified check before ordering; structural design needs a licensed engineer.
+`~/.claude/skills/` (`mkdir -p ~/.claude/skills` first), then connect Blender: `uvx mcp-for-blender install-addon` and
+`claude mcp add --scope user blender uvx mcp-for-blender`. Quantities need a qualified check before ordering; structural design needs a licensed engineer.
 
 ---
 

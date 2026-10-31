@@ -69,14 +69,14 @@ POINTS = [
     ("SW_Bed2", "sw", "Bed2", "x1", 1.62, 1), ("SW_Bed1", "sw", "Bed1", "x1", 5.75, 1),   # (SW_Bed2 off SW_Porch's back, 31 ต.ค.)
     ("SW_Bath", "sw", "Living", "x0", 4.27, 1),   # (spec 30 ต.ค.: its chase in the door-jamb tie — no brick door → D2; 4.30 grazed D2's coat)
     ("SW_Living", "sw", "Living", "x1", 1.75, 1), ("SW_Porch", "sw", "Living", "x0", 1.7825, 1),   # (spec 31 ต.ค.: porch lights on a switch of their own, by the SW corner — between its loop's straight past the corner and the Bed2 door's jamb tie)
-    ("SW_Kitchen", "sw", "Living", "x1", 6.75, 2),   # (assumed 30 ต.ค.: past the back door D3 (5.64–6.55 since ST14, east edge pinned) + its tie; 5.55 left the CU no room)
+    ("SW_Kitchen", "sw", "Living", "x1", 6.75, 2),   # (the user confirmed 31 ต.ค.; set 30 ต.ค.: past the back door D3 (5.64–6.55 since ST14, east edge pinned) + its tie; 5.55 left the CU no room)
     ("SO_Bed2_1", "so", "Bed2", "x0", 1.80, 2), ("SO_Bed2_2", "so", "Bed2", "y1", 2.40, 2),
     ("SO_Bed1_1", "so", "Bed1", "x0", 6.30, 2), ("SO_Bed1_2", "so", "Bed1", "y0", 1.00, 2),
     ("SO_Living_1", "so", "Living", "x1", 3.70, 2), ("SO_Living_2", "so", "Living", "x0", 6.50, 2),
-    ("SO_Fridge", "so", "Living", "y1", 5.45, 2),   # (assumed; 30 ต.ค. 7 cm off the NE corner column: room for its loop)
-    ("SO_Kitchen_1", "so", "Living", "y1", 3.65, 2), ("SO_Kitchen_2", "so", "Living", "y1", 5.30, 2),   # (assumed 30 ต.ค.: 3.65 / 5.30 either side of window W3 + its tie; loops need ≥ 0.37 apart)
+    ("SO_Fridge", "so", "Living", "y1", 5.45, 2),   # (the user confirmed 31 ต.ค.; 30 ต.ค. 7 cm off the NE corner column: room for its loop)
+    ("SO_Kitchen_1", "so", "Living", "y1", 3.65, 2), ("SO_Kitchen_2", "so", "Living", "y1", 5.30, 2),   # (the user confirmed 31 ต.ค.; set 30 ต.ค.: 3.65 / 5.30 either side of window W3 + its tie; loops need ≥ 0.37 apart)
     ("HT_Bath", "heater", "Bath", "y0", 2.55, 0), ("AC_Bed1", "ac", "Bed1", "x0", 6.10, 0),
-    ("CU", "cu", "Living", "x1", 5.10, 0),   # (assumed; 5.00 left no room to set out past D3 above the wall angle)
+    ("CU", "cu", "Living", "x1", 5.10, 0),   # (the user confirmed 31 ต.ค.; 5.00 left no room to set out past D3 above the wall angle)
 ]
 # which switch gang lights each downlight (the switched conductor runs between them)
 CTL = {"DL_Bath": ("SW_Bath", 1), "DL_Bed2_1": ("SW_Bed2", 1), "DL_Bed2_2": ("SW_Bed2", 1), "DL_Bed1_1": ("SW_Bed1", 1),

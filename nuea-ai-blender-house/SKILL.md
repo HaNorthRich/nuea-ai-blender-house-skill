@@ -271,8 +271,8 @@ Assets (6b) and landscape (6c): `references/visual-extras.md`.
   `Blender -b <file> -P scripts/render_cycles.py -- --cam <cam> --out <png> [--hide a,b] [--show c]`.
   On an Apple-silicon Mac (Metal GPU) 960x540 @128 samples took 6–8 s — real glass, GI and soft shadows for free compared
   with EEVEE's alpha-glass hack. Set `M_Glass` back to transmission 1.0 / alpha 1.0 for Cycles.
-- Cutaway sets (structure/foundation/rebar/roof steel, E42 27 ต.ค.): a per-job wrapper that sets `hide_render` per
-  preset, then `exec`s `render_cycles.py` (`examples/e42/scripts/e42_render.py`). Hiding a whole collection: loop over
+- Cutaway sets (structure/foundation/rebar/roof steel, E42 27 ต.ค.): a per-job wrapper (your project's own script) that sets `hide_render` per
+  preset, then `exec`s `render_cycles.py`. Hiding a whole collection: loop over
   `list(coll.all_objects)` — `all_objects` is rebuilt on each visibility change, so a live loop stopped after 2 objects
   and the walls, furniture and trees stayed in the structure shot. Put a soil plane just under the lean concrete
   (`Ground_Dig`, Poly Haven `raked_dirt`), shown only in those presets, or the foundation floats over the sky.

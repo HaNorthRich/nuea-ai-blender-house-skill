@@ -461,7 +461,7 @@ Plan:
     - Boxes: TOP 2×4 14 (2 on the plate) + 4×4 4; flush 2×4 17.
     - Holes 6 + soffit 2; chases 25, 43.4 m.
     - Wire 1.5 341.1 / G1.5 36.3 / 2.5 202.9 / G2.5 100.2 / 4 60.6 / 16 18.1 / G10 3.9.
-  - **Points assumed or moved (to confirm with the user):** CU 5.10, SW_Kitchen 6.75, SO_Kitchen 3.65 / 5.30, SO_Fridge 5.45, SW_Porch 1.7825, SW_Bed2 1.62, SW_Bed1 5.75, the meter board on A3.
+  - **Points assumed or moved (the user confirmed 31 ต.ค.):** CU 5.10, SW_Kitchen 6.75, SO_Kitchen 3.65 / 5.30, SO_Fridge 5.45, SW_Porch 1.7825, SW_Bed2 1.62, SW_Bed1 5.75, the meter board on A3.
   - **Still open:**
     - The D3 level run is missing from chase (~0.3 m).
     - Test gaps R1–R6.
@@ -489,3 +489,4 @@ Plan:
   - Bed1 boxes need a smarter pull-box placement.
   - The living room could get boxes if its passing circuits moved up onto the wall plate.
 - **Fixed: the spacing guard never fired.** Two wall devices' junction boxes must be ≥ JB + 1 cm apart along the run (JB 0.303 m), unless the second is fed from the first in the wall. The old exemption was "gap < 2·LOOP + 3 cm" (0.366 m), wider than JB + 1 cm, so every gap passed. The guard now exempts only a pair the router really links (`links()`, shared with walk_visit: < 2·LOOP + 3 cm, straight wall between, and the in-wall bend fits; a fed device links on to none). Tests in test_elec group c: a level pair 22 cm apart → "too close"; the same pair 90 cm apart in height passes (linked); SO_Bed2_2 50 cm toward the way in → "would start before". The old guard misses the first. The house routes as before (same rooms boxed, same lengths).
+- **Assumed points confirmed by the user (31 ต.ค.):** CU 5.10, SW_Kitchen 6.75, SO_Kitchen 3.65 / 5.30, SO_Fridge 5.45, SW_Porch 1.7825, SW_Bed2 1.62, SW_Bed1 5.75, the meter board on column A3.

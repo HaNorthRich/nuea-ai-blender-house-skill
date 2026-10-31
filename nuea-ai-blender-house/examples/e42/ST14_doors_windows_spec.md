@@ -22,7 +22,7 @@ No burglar bars. The model and BOQ named different bath doors and bedroom frames
 - ECO DOOR WPC frame TVWG-100 (2″×4″): the 700×2000 frame needs a 780 × 2050 masonry opening; the 800×2000 frame needs 880 × 2050.
   https://www.eco-door.net/product/wpc-frame-tvwg-100/ (read 31 ต.ค. 69)
 - KASSA WPC frame 80×200: 10 cm jamb, shipping size 205 × 88. It publishes no rough opening.
-  - **Assumed 88 × 205**, the same as ECO DOOR's frame of that size. Confirm with KASSA or the shop.
+  - **88 × 205**, the same as ECO DOOR's frame of that size (assumed; the user confirmed 31 ต.ค.).
   - https://www.thaiwatsadu.com/th/product/…-60297352
 
 ## Step 1: openings (done in the trial run, 31 ต.ค.)
@@ -52,7 +52,7 @@ Every selfcheck passes after the rebuild of walls → tiles → primer → coat 
   - sliding panes on 2 tracks (D1: F-S-S-F, fixed outside, sliders butt);
   - awning W2; louvres W4 with frosted glass;
   - screens on the room side (not on W4).
-- **Hinge/swing (assumed):** every door opens into its room; latch beside the room's switch. Bed2 hinged north; Bed1, bath and kitchen hinged south.
+- **Hinge/swing (the user confirmed 31 ต.ค.):** every door opens into its room; latch beside the room's switch. Bed2 hinged north; Bed1, bath and kitchen hinged south.
 - **Selfcheck, read from the model:**
   - one unit per opening;
   - frame snug in the clear measured in the wall;
@@ -70,7 +70,7 @@ Every selfcheck passes after the rebuild of walls → tiles → primer → coat 
 - A selfcheck from the model: every opening has one unit; each frame fits its opening; nothing clashes with the walls, the conduit or the boxes.
 - The old massing `*_leaf` objects (from `e42_build.py`, used by `e42_render.py`) are replaced.
 
-## Open (assumed)
+## Confirmed by the user on 31 ต.ค. (were assumed)
 
 - KASSA's rough opening (88 × 205).
 - Hinge side and swing for each door.

@@ -13,7 +13,7 @@ DOORSET = {"D2": dict(leaf=(0.80, 2.00), leaf_t=("DR1", "ประตู uPVC MA
            "D4": dict(leaf=(0.70, 2.00), leaf_t=("DR2", "ประตู uPVC ECO DOOR W2 70 × 200 ซม. (เจาะลูกบิด)"),
                       frame_t=("DF2", "วงกบ WPC ECO DOOR TVWG-100 70 × 200 ซม."), handle_t=("DH2", "ลูกบิดห้องน้ำ HAFELE 489.93.271"))}
 DOORSET["D3"] = DOORSET["D2"]   # the kitchen door: the bedrooms' (spec 31 ต.ค.)
-# hinge end along the line, swing across it (into the room), and the switch the latch goes beside (assumed 31 ต.ค.:
+# hinge end along the line, swing across it (into the room), and the switch the latch goes beside (the user confirmed 31 ต.ค.:
 # latch by the switch, the leaf opens back against the nearest cross wall)
 SWING = {"D2_Bed2": ("c1", -1, "SW_Bed2"), "D2_Bed1": ("c0", -1, "SW_Bed1"), "D4_Bath": ("c0", -1, "SW_Bath"),
          "D3_Kitchen": ("c0", -1, "SW_Kitchen")}
