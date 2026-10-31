@@ -1,5 +1,31 @@
 # nuea.ai Blender House — Skill ปั้นบ้าน 3D ใน Blender ด้วย Claude
 
+> **For Claude and other AI agents:** to install this skill, follow [INSTALL.md](INSTALL.md)
+> (raw: https://raw.githubusercontent.com/HaNorthRich/nuea-ai-blender-house-skill/main/INSTALL.md).
+
+## ติดตั้งง่ายที่สุด: ให้ Claude ลงให้
+
+1. ลง [Blender](https://www.blender.org/download/) (4.2 ขึ้นไป) และเปิด [Claude Code](https://claude.com/claude-code)
+   (ในแอป Claude บนคอมพิวเตอร์ แท็บ Code หรือใน terminal) Claude Code ใช้กับแพ็กเกจเสียเงินของ Claude (Pro ขึ้นไป)
+   หรือ API key แพ็กเกจฟรีใช้ไม่ได้ ([ดูแพ็กเกจ](https://claude.com/pricing))
+2. ส่งข้อความนี้ให้ Claude
+
+   ```
+   ลง Skill นี้ให้หน่อย https://github.com/HaNorthRich/nuea-ai-blender-house-skill
+   ```
+
+3. Claude จะเช็ก Blender ลง Skill และต่อ Blender MCP ให้ตามขั้นตอนใน [INSTALL.md](INSTALL.md) ในโหมดปกติ
+   Claude Code จะขอให้คุณกดอนุญาตก่อนรันแต่ละคำสั่ง อ่านคำสั่งก่อนกด Allow และ INSTALL.md สั่งให้ Claude ถามคุณก่อน
+   ติดตั้งโปรแกรมเพิ่ม
+4. ตอนจบ Claude จะบอกสิ่งที่คุณต้องทำเอง:
+   - เปิด add-on "MCP for Blender" ใน Blender แล้วกด Start MCP Server ถ้ายังไม่ทำงาน
+   - ปิด Claude Code ให้สนิทแล้วเปิดใหม่
+   - พิมพ์ `เช็กสถานะ Blender` ถ้า Claude ตอบเวอร์ชันของ Blender ได้ แปลว่าพร้อมใช้
+
+ถ้าอยากลงเอง ดูหัวข้อ [ติดตั้ง](#ติดตั้ง) ด้านล่าง
+
+## Skill นี้ทำอะไร
+
 Skill สำหรับ [Claude Code](https://claude.com/claude-code) ที่ช่วยให้ Claude ปั้นบ้านใน Blender ผ่าน Blender MCP ทำได้ 2 แบบ
 
 1. **โมเดลขาย**: จากแปลน, brochure หรือภาพ SketchUp → ผนัง ช่องเปิด หลังคา กระเบื้อง วัสดุ เฟอร์นิเจอร์ แสง
@@ -54,7 +80,8 @@ cp -R nuea-ai-blender-house-skill/nuea-ai-blender-house ~/.claude/skills/
 
 # 2. Blender MCP: add-on ฝั่ง Blender และ server ฝั่ง Claude Code (ใช้ได้ทุกโปรเจกต์)
 uvx mcp-for-blender install-addon
-claude mcp add --scope user blender uvx mcp-for-blender
+claude mcp add --scope user blender "$(command -v uvx)" mcp-for-blender   # (path เต็มของ uvx: แอปบนเดสก์ท็อปหาเจอด้วย)
+# Windows: ใช้ path ที่ `where uvx` พิมพ์ (C:\…\uvx.exe) แทน "$(command -v uvx)"
 ```
 
 เปิด Blender แล้วเปิด add-on และกด Start MCP Server จากนั้นเปิด Claude Code ใหม่ แล้วสั่งว่า "เช็กสถานะ Blender"
@@ -90,9 +117,13 @@ A Claude Code skill for modelling houses in Blender through Blender MCP: sales m
 materials, furniture, renders) or construction models built stage by stage in real construction order, every piece
 at its product's size, each stage read back by a selfcheck and guarded by a mutation test suite. The full worked
 example (a 42 m² house, `examples/e42/`) builds from an empty Blender with every check passing:
-`blender -b --factory-startup --python-exit-code 1 -P nuea-ai-blender-house/examples/e42/scripts/build_all.py`. Install by copying `nuea-ai-blender-house/` into
+`blender -b --factory-startup --python-exit-code 1 -P nuea-ai-blender-house/examples/e42/scripts/build_all.py`.
+Easiest install: send this repository's link to Claude Code and ask it to install the skill; it follows
+[INSTALL.md](INSTALL.md). By hand: copy `nuea-ai-blender-house/` into
 `~/.claude/skills/` (`mkdir -p ~/.claude/skills` first), then connect Blender: `uvx mcp-for-blender install-addon` and
-`claude mcp add --scope user blender uvx mcp-for-blender`. Quantities need a qualified check before ordering; structural design needs a licensed engineer.
+`claude mcp add --scope user blender "$(command -v uvx)" mcp-for-blender` (Windows: the `C:\…\uvx.exe` path that
+`where uvx` prints). Claude Code needs a paid Claude plan
+(Pro and up) or an API key. Quantities need a qualified check before ordering; structural design needs a licensed engineer.
 
 ---
 
