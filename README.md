@@ -24,6 +24,26 @@
 
 ถ้าอยากลงเอง ดูหัวข้อ [ติดตั้ง](#ติดตั้ง) ด้านล่าง
 
+## อัปเดตล่าสุด (4 พ.ย. 2569)
+
+เพิ่มงานระบบและงานเก็บของโมเดลก่อสร้างครบทั้งหลัง และวิธีปั้นละเอียดโดยกิน token น้อยลง ดูรายละเอียดใน [CHANGELOG.md](CHANGELOG.md)
+
+- **ขั้นใหม่**: บัวภายนอก (ST15) · ท่อประปา ท่อโสโครก ท่อน้ำทิ้ง ท่ออากาศ ถังบำบัด บ่อดักไขมัน ถังน้ำ ปั๊ม (ST16) · สุขภัณฑ์ เคาน์เตอร์
+  อุปกรณ์ห้องน้ำ (ST17) · ระบบกันปลวก บัวพื้น เฟรชชิ่งโรงรถ ช่องเซอร์วิส (ST18)
+- **ท่อร้อยสายทั้งหลัง**: เดินท่อ 20 มม. ตามสินค้าที่มีขายจริง กล่องพัก ท่ออ่อนเข้าโคม นับสายต่อชิ้นท่อ รวมไฟโรงรถใต้หลังคาที่ต่ำกว่าฝ้าบ้าน
+  และจุดที่อยู่ผนังด้านนอก (ปั๊ม เต้ารับโรงรถ)
+- **ตารางเทียบ BOQ** ว่าแต่ละขั้นให้ปริมาณกับแถวไหน และแถวที่โมเดลมักลืม
+- **ปั้นละเอียดไม่ให้เปลือง token** (`references/working-economy.md`): วัดจากงานจริงว่า token หมดไปกับอะไร แล้วตั้งกติกา 9 ข้อ
+  พร้อมเครื่องมือ `scripts/checks.py` (ตรวจรอบเดียวเห็นทุกจุดที่ผิด) และ `scripts/probe.py` (วัดโมเดลเป็นตาราง)
+
+**เคยลงเวอร์ชันก่อนหน้า?** ส่งข้อความนี้ให้ Claude Code แล้ว Claude จะสำรองตัวเก่าและลงตัวใหม่ให้ตาม INSTALL.md
+
+```
+อัปเดต Skill นี้ให้หน่อย https://github.com/HaNorthRich/nuea-ai-blender-house-skill
+```
+
+หรือทำเอง ดูหัวข้อ "ถ้าเคยลงเวอร์ชันก่อนหน้า" ใน [CHANGELOG.md](CHANGELOG.md) แล้วปิด Claude Code และเปิดใหม่
+
 ## Skill นี้ทำอะไร
 
 Skill สำหรับ [Claude Code](https://claude.com/claude-code) ที่ช่วยให้ Claude ปั้นบ้านใน Blender ผ่าน Blender MCP ทำได้ 2 แบบ
@@ -35,7 +55,9 @@ Skill สำหรับ [Claude Code](https://claude.com/claude-code) ที่
    - ฐานราก → ตอม่อ → คานคอดิน → พื้น → เสา
    - ผนัง → หลังคา → ฝ้า
    - สีรองพื้น → สีรอบ 1 → กระเบื้อง → ไฟฟ้า → สีรอบ 2
-   - ประตูหน้าต่าง
+   - ประตูหน้าต่าง → บัวภายนอก
+   - สุขาภิบาล (ท่อ ถัง ปั๊ม) → สุขภัณฑ์และเคาน์เตอร์ → กันปลวก บัวพื้น เฟรชชิ่ง ช่องเซอร์วิส
+   - ท่อร้อยสาย กล่องพัก ท่ออ่อน สายไฟ
 
    ทุกขั้นมีตัวตรวจ (selfcheck) ที่อ่านค่ากลับจากโมเดล และมีเทสแบบ "จงใจทำผิด" ที่ตัวตรวจต้องจับได้
 
@@ -100,8 +122,8 @@ Claude จะถามสเปกของแต่ละขั้นก่อ�
 | ที่อยู่ | คืออะไร |
 |---|---|
 | `nuea-ai-blender-house/SKILL.md` | ขั้นตอนหลัก: โมเดลขาย (Workflow A) และโมเดลก่อสร้างทีละขั้น (Workflow B) |
-| `nuea-ai-blender-house/references/` | ความรู้แยกตามขั้น: โครงสร้าง ผนัง หลังคา ฝ้า สี กระเบื้อง ไฟฟ้า ประตูหน้าต่าง และวิธีตรวจ |
-| `nuea-ai-blender-house/scripts/` | สคริปต์ Blender: ผนัง/ช่องเปิด หลังคา ครอบ CPAC เหล็กรูปพรรณตามหน้าตัดจริง ตรวจคาน (WSD) วาดแบบ CAD render ส่งออก SketchUp คลังเฟอร์นิเจอร์ (CC0/CC-BY) วางบ้านลงผังโครงการ |
+| `nuea-ai-blender-house/references/` | ความรู้แยกตามขั้น: โครงสร้าง ผนัง หลังคา ฝ้า สี กระเบื้อง ไฟฟ้าและท่อร้อยสาย ประตูหน้าต่าง สุขาภิบาล วิธีตรวจ ตารางเทียบ BOQ และวิธีปั้นละเอียดไม่ให้เปลือง token |
+| `nuea-ai-blender-house/scripts/` | สคริปต์ Blender: ผนัง/ช่องเปิด หลังคา ครอบ CPAC เหล็กรูปพรรณตามหน้าตัดจริง ตรวจคาน (WSD) วาดแบบ CAD render ส่งออก SketchUp คลังเฟอร์นิเจอร์ (CC0/CC-BY) วางบ้านลงผังโครงการ ตัวรวมผลตรวจ (`checks.py`) และตัววัดโมเดล (`probe.py`) |
 | `nuea-ai-blender-house/examples/e42/` | บ้านตัวอย่าง: โมดูลทีละขั้น, `build_all.py`, เทสทุกชุด, spec ของงานไฟฟ้าและประตูหน้าต่าง |
 
 ## ข้อควรรู้
@@ -124,6 +146,13 @@ Easiest install: send this repository's link to Claude Code and ask it to instal
 `claude mcp add --scope user blender "$(command -v uvx)" mcp-for-blender` (Windows: the `C:\…\uvx.exe` path that
 `where uvx` prints). Claude Code needs a paid Claude plan
 (Pro and up) or an API key. Quantities need a qualified check before ordering; structural design needs a licensed engineer.
+
+**Update (4 Nov 2026):** construction stages ST15–ST18 (exterior mouldings, sanitary pipes and tanks, sanitary ware and counters,
+termite system, skirting, flashing, ceiling hatch), whole-house 20 mm conduit with boxes, flex and wire counts (including a
+carport roof below the house ceiling and points on outside faces), a BOQ coverage table, and `references/working-economy.md`:
+measured token costs of a detailed model and the rules plus tools (`scripts/checks.py`, `scripts/probe.py`) that keep the
+detail at a fraction of the cost. Already installed? Ask Claude Code: "update this skill
+https://github.com/HaNorthRich/nuea-ai-blender-house-skill", or see [CHANGELOG.md](CHANGELOG.md).
 
 ---
 

@@ -2,11 +2,27 @@
 
 Read when modelling gypsum or Smartboard ceilings, soffits, frames and hangers.
 
+## Lessons from SS-02 (ST08, 1 พ.ย.)
+
+- Soffit frames need all three rows and the cross pieces. Leaving out the cross pieces passed the area check and
+  left the BOQ about 8% short on runners and 2 Smartboard sheets short.
+- Prove position per eave from a typed table of fascia-line ends and corner kinds (+1 convex, -1 reflex): both ends of
+  each runner, one runner per (eave, row), and cross-piece count, first and last centre, gap and length. Distance to
+  an endless plane fixes a piece across its eave only, and a gap rule over neighbours needs the two ends too.
+- Height of the frame has its own rule: a rule that reads plan position only misses a frame floating over the boards.
+- Hanger top: test against each real rafter's section, not "near a rafter line". A wide test passed rods beyond the
+  rafter's end.
+- Report numbers read from the model, never a typed table: a typed sum cannot show a board that moved.
+- Stop inside plaster at the ceiling, outside plaster to wall top. Update the ST06 quantities when this stage settles
+  the ceiling levels.
+- Adding a position rule shadows older mutations. Give each older rule a mutation that passes the new rule, then
+  delete any total the new rule makes unreachable.
+
 ## ฝ้า (ST08, spec 29 ต.ค.; `examples/e42/scripts/e42_ceiling.py`, SCG Smartboard ceiling manual `ขั้นตอนการติดตั้งฝ้า.pdf`)
 
 - **Ask every house:** board type and thickness, height from each floor, frame system, the bath board, and the
   soffit board and level.
-- **the user's E42 spec:**
+- **The user's E42 spec:**
   - Inside: gypsum 9 mm (1.20 × 2.40) at FL + 2.80 on a C-line grid.
   - Bath: moisture-resistant gypsum at the bath floor + 2.60. The bath floor is 10 cm down, so that is +2.95.
   - Eave soffit: Smartboard vented at the fascia level.
@@ -55,7 +71,7 @@ Read when modelling gypsum or Smartboard ceilings, soffits, frames and hangers.
   eave).
 - Put the old bug back as a mutation.
 - Mutations: 12 of 12 caught.
-- **the user's E42 products (29 ต.ค.):**
+- **The user's E42 products (29 ต.ค.):**
   - Eave soffit: SCG Smartboard "เซาะร่องระบายอากาศครึ่งแผ่น" 60 × 120 × 0.4, cement colour, 5.1 kg. Draw 3 real
     slots 3" apart in the fascia-side half (slot sizes are not printed: 25 cm slots, 5 cm bridges, 6 mm).
   - Porch (เฉลียง): Smartboard flat, joints filled smooth like the gypsum inside; the eave round it stays vented.

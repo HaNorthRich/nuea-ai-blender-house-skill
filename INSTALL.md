@@ -47,22 +47,22 @@ new shell if `uvx` is still not found.
 
 ## 3. The skill
 
-If `~/.claude/skills/nuea-ai-blender-house` already exists, this is an update. Ask; on yes, move the old copy out of
-the skills folder (two folders with the same skill name would both load):
+If `~/.claude/skills/nuea-ai-blender-house` already exists, this is an update. Ask; on no, keep the installed copy as it
+is and go to step 4. On yes, fetch the new copy first, and only then move the old one out of the skills folder (two folders
+with the same skill name would both load) and copy the new one in, as one command, so a failed download leaves the old
+copy where it was:
 
 ```bash
-mv ~/.claude/skills/nuea-ai-blender-house ~/.claude/nuea-ai-blender-house.bak-$(date +%Y%m%d%H%M%S)
+SRC="$(mktemp -d)" && git clone --depth 1 https://github.com/HaNorthRich/nuea-ai-blender-house-skill.git "$SRC/repo" && mv ~/.claude/skills/nuea-ai-blender-house ~/.claude/nuea-ai-blender-house.bak-$(date +%Y%m%d%H%M%S) && cp -R "$SRC/repo/nuea-ai-blender-house" ~/.claude/skills/
 ```
 
-On no, keep the installed copy as it is and go to step 4.
-
-Then fetch and copy, as one command (with git):
+A first install fetches and copies, as one command (with git):
 
 ```bash
 SRC="$(mktemp -d)" && git clone --depth 1 https://github.com/HaNorthRich/nuea-ai-blender-house-skill.git "$SRC/repo" && mkdir -p ~/.claude/skills && cp -R "$SRC/repo/nuea-ai-blender-house" ~/.claude/skills/
 ```
 
-Without git:
+Without git (for an update, put the same `mv` between the download and the `cp`):
 
 ```bash
 SRC="$(mktemp -d)" && curl -fsSL https://github.com/HaNorthRich/nuea-ai-blender-house-skill/archive/refs/heads/main.tar.gz | tar -xz -C "$SRC" && mkdir -p ~/.claude/skills && cp -R "$SRC/nuea-ai-blender-house-skill-main/nuea-ai-blender-house" ~/.claude/skills/

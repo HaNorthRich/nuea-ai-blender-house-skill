@@ -33,8 +33,7 @@ Read for furniture/plant/car assets, landscape, CAD drawings, SketchUp hand-off 
   (`render_cycles.py --hide Curtain_…`); never hang sheers over a door (CM3 living room went white).
 - Keep every download in `~/3d-assets/<category>/<source>-<slug>-<uid>/` with the model, `SOURCE.json`
   (source, uid, url, author, licence, date) and `ATTRIBUTION.txt` (CC-BY needs "<model> by <author>, CC BY x.x,
-  Sketchfab <url>" wherever the image is used). Re-use the library before downloading again; the local copy is
-  the source of truth.
+  Sketchfab <url>" wherever the image is used). Re-use the library before downloading again; the local copy is the source of truth.
 
 ## 6c. Landscape
 - Poly Haven has no clipped hedges, palms or cypress. `hedge(name, path, w, h)` sweeps a rounded-rectangle section
@@ -129,6 +128,6 @@ Read for furniture/plant/car assets, landscape, CAD drawings, SketchUp hand-off 
   (−1,−1,−1) + 180° about x. Set `scale = (−1, 1, 1)` and the z rotation instead. Check the carport and eaves against a
   slanted plot line before placing: `carport_classic` projects 2.1 m past the front wall. The user wanted plot 7's carport
   anyway: shorten a copy by cut-and-slide (bisect at two y planes, delete the band, slide the front assembly back,
-  weld, assert no open seam edges), so columns, fillets and cornice stay as on the other plots.
-  Copy with `o.copy()` + new `.data`: `objects.new(name, me)` dropped the
+  weld, assert no open seam edges), so columns, fillets and cornice stay as on the other plots
+  (a project script). Copy with `o.copy()` + new `.data`: `objects.new(name, me)` dropped the
   sheet's Solidify modifier.

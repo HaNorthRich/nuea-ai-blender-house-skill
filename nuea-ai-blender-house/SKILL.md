@@ -7,9 +7,10 @@ description: >-
 # nuea.ai Blender House (Blender MCP)
 
 Distilled from real house jobs: hip-roof sales models with interiors and renders, an L-shaped two-roof house on a
-site plan, a house corrected to its site photos, and a 42 m² house (E42) modelled stage by stage in construction
-order for quantity take-off (its full code is in `examples/e42/`). Every gotcha below cost at least one render or
-rebuild round-trip. Reply in the user's language; code and object names in English.
+site plan, a house corrected to its site photos, a 42 m² house (E42) modelled stage by stage in construction
+order for quantity take-off (its full code is in `examples/e42/`), and a 95 m² single-storey house (SS-02) taken on to
+sanitary, fixtures, the BOQ extras and every conduit. Every gotcha below cost at least one render or rebuild
+round-trip. Reply in the user's language; code and object names in English.
 
 Work in the live Blender MCP session itself: the session holds the scene, so keep the modelling in one conversation.
 
@@ -26,6 +27,8 @@ Work in the live Blender MCP session itself: the session holds the scene, so kee
 | `scripts/cpac_caps.py` | the 8 SCG CPAC trim pieces as solids (sizes from SCG dealer pages, 13 mm wall, `selftest()` against catalogue weights); `arch(fall=)` seats skirts on the tile fall; `junction()` = the three-/four-way as one shell (Workflow B) |
 | `scripts/steel_sections.py` | cold-formed steel to the real profile: `lipped_c` (inner radius = t), `box_tube` + `tube` (TIS 107 square tube), `strip` (thin formed sections such as hat battens, from the centreline), `prism` (closed sweep, quad caps), `frame` (place along any axis), `obb` + `obb_overlap` (clash test for sloped members), `TIS` kg/m + `selftest()` (Workflow B). `roof.py`'s `roof_frame` is solid boxes — fine for renders, not for take-off (use the E42 ST07 way) |
 | `scripts/beam_wsd.py` | RC beam check by the engineer's WSD method (from a licensed engineer's calculation sheet): design criteria, slab → beam loads, continuous beams with live-load patterns, moment/minimum-steel/shear checks; `selftest()` reproduces the engineer's numbers (Workflow B) |
+| `scripts/checks.py` | `each(items, fn, what)`: run a check on every item and raise one error listing every failure with its [tag] (`CHECK_FIRST=1` stops at the first) — one run, every fault (Workflow B) |
+| `scripts/probe.py` | headless measuring in compact tables: `objects_in(lo, hi)` what is in a box of space, `parts(name)` an object's loose parts (ties, lintels), `near(p)` nearest surface of each object (Workflow B) |
 | `scripts/assets.py` | asset library: `sf_search` (CC0/CC-BY only), `sf_fetch` (download once into `~/3d-assets` + licence files), `place_asset` / `place_collection` (scaled, bottom-centre placement; also for Poly Haven model collections) |
 | `examples/e42/scripts/` | the construction model built stage by stage (Workflow B): `build_all.py` (the whole house from an empty Blender, every stage checked, ~2 min), `e42_load.py` (loads every module in build order, refuses a name defined twice; `SKILL_SCRIPTS` points at this skill's `scripts/`), `e42_struct.py` … `e42_units.py` one module per stage, `test_*.py` one mutation suite per stage — the reference implementation for every `references/stage-*.md` |
 
@@ -33,6 +36,7 @@ References (read when the pointer's condition holds):
 
 | File | Read when |
 |---|---|
+| `references/working-economy.md` | **before a construction model, and whenever a stage passes ~30 runs**: what a detailed model's token bill is made of (measured) and the rules that keep full detail at a fraction of it |
 | `references/construction-method.md` | before the first stage of a construction model; when a check fails in a way you don't understand |
 | `references/stage-structure.md` | grid, footings, stubs, ground beams, slab, columns; choosing a ground-beam type |
 | `references/stage-walls.md` | walls, plaster, beads, wall plate, door/window openings |
@@ -41,6 +45,8 @@ References (read when the pointer's condition holds):
 | `references/stage-paint.md` | primer and paint coats, buckets |
 | `references/stage-tiles.md` | steps, waterproofing, screed, floor/wall tiles, skirting |
 | `references/stage-electrical.md` | lights, switches, sockets, consumer unit, conduit, wire, the service main |
+| `references/stage-sanitary.md` | water supply, soil/waste/vent pipes, septic tank, grease trap, manholes, water tank, pump; sanitary ware, counters, bath accessories |
+| `references/boq-coverage.md` | before the first stage and before a take-off script: which stage feeds each line of your BOQ template, and the lines a model tends to miss |
 | `references/stage-openings.md` | door sets, aluminium windows/doors, glass, screens |
 | `references/visual-extras.md` | furniture/plant/car assets, landscape, CAD drawings, SketchUp hand-off, a site plan |
 
@@ -171,6 +177,12 @@ Ask which one when the request does not say.
    Every builder (walls, boxes, roof parts) replaces an object of the same name, so re-run a step to fix it —
    don't delete by hand. A rebuild keeps the materials already on the object; to change one, set
    `obj.data.materials[0]` directly (the `m=` argument only seeds new objects).
+   Lean-to (เพิงหมาแหงน, 4 พ.ย.): one sloped soffit plane `zr(y)` over the whole roof rectangle, walls up to
+   `zr − soffit`. A wall along x with a flat top at its low face leaves a wedge gap on the high face (front wall:
+   1.6 cm) — add a triangle prism on top; assert per vertex `v.z <= zr(v.y) − soffit` over walls + decor.
+   Slat (ไม้ระแนง) facade: the user rejected a sparse slat grid round the window; they want ONE tight full-height panel
+   (SCG/Shera 7.5 × 300 × 0.8 cm, 1 cm joint, dark backing) beside the window by the entrance, wrapped round the
+   corner, plus a thin flat double frame round the black window and a black wall lamp. Keep the panel ≤ 3 m (one plank).
 4. Carport: for a classic house use `carport_classic(...)` (default 3° click-lock sheet, purlins on rafters flush
    with the edge beams): sheet + steel hidden behind a white fascia with cornice bands, flat soffit with downlights,
    columns with base/capital, rounded fillets between the street-side columns — the user found the bare steel version
@@ -291,11 +303,21 @@ CAD drawings (7b), SketchUp (7c), a site plan (7d): `references/visual-extras.md
 
 The model is the job site in miniature: every piece to its product's drawing, built in construction order, so what
 is read from it is what gets ordered (a take-off script measures it headless). Reference implementation: E42 บ้านทรงประหยัด 42 ตร.ม.
-(28–31 ต.ค. 69). Read `references/construction-method.md` before the first stage.
+(28–31 ต.ค. 69). Read `references/working-economy.md` and `references/construction-method.md` before the first stage.
+
+**Cost control without losing detail** (SS-02 measured 3,139 turns and 1.7 B cache-read tokens in one session): one stage per
+session with its spec as the handoff · drawings read once into `FACTS.md` · real product sizes before any route · `probe.py`
+and formulas instead of reasoning numbers out · `checks.each` so one run lists every fault · iterate on a base file, filtered
+output · only the touched mutations until the stage closes · stop after three runs on the same assert and change the design.
 
 Order: ST00 grid · ST01 footings · ST02 stubs · ST03 ground beams · ST04 slab · ST05 columns · ST06 walls + wall
 plate · ST07 roof frame → fascia → covering · ST08 ceilings · ST09 primer · ST10 paint coat 1 · ST11 tiles · ST12
-electrical · ST13 paint coat 2 · ST14 doors, windows, aluminium. Each stage reads its `references/stage-*.md`.
+electrical · ST13 paint coat 2 · ST14 doors, windows, aluminium · ST15 exterior mouldings (when the drawings have
+them) · ST16 sanitary pipes and tanks · ST17 sanitary ware, counters, bath accessories · ST18 the rest of the BOQ
+(termite system, skirting, flashing, service hatch; roof insulation is ST08's wool unless the drawings ask for foil).
+ST16–ST18 all read `references/stage-sanitary.md`; the other stages read their own `references/stage-*.md`;
+`references/boq-coverage.md` says which BOQ lines each one feeds. Build order may differ from site order (SS-02 built
+ST09 → ST14 → ST15 → ST11 → ST10 → ST12 → ST13): say so in each spec, and keep the site order in its "ส่งต่อ".
 
 Per stage:
 
@@ -309,9 +331,10 @@ Per stage:
    stage's piece (meshes and curves), take-off rows against what they count. Done when this stage's selfcheck and
    every earlier stage's pass on the rebuilt model.
 4. **Mutations.** One per rule, each caught by its own message, clean controls passing, undo verified. Done when the
-   suite reports nothing missed, and every suite whose module you touched still passes.
-5. **Close.** Review the diff, back up the .blend and the scripts, save, log the stage in its spec file, report in
-   Thai with the quantities and what was assumed, then stop for the user's check.
+   suite reports nothing missed, and every suite whose module you touched still passes (whole suites once, at the close).
+5. **Close.** Review the diff, back up the scripts (an old .blend is rebuilt from them, don't keep copies), save, log the
+   stage in its spec file with a handoff for the next session, report in Thai with the quantities and what was assumed,
+   then stop for the user's check and start the next stage in a fresh session.
 
 ## Blender shortcuts
 - Move `G` (`G X/Y/Z` locks an axis), rotate `R`, scale `S`, hide `H` / unhide `Alt+H`, camera view `Numpad 0`,
@@ -319,4 +342,4 @@ Per stage:
   "disappeared" in P-2389).
 
 ## New lessons
-Add each new gotcha where its branch lives — `SKILL.md` for Workflow A, the matching `references/` file for a stage or the method — with the job it came from.
+Add each new gotcha where its branch lives — `SKILL.md` for Workflow A, the matching `references/` file for a stage or the method — with the job it came from, not to memory.

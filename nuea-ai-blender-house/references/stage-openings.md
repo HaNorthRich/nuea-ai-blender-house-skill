@@ -24,6 +24,19 @@ Read when modelling door sets, aluminium windows or doors, glass or screens.
   - check across the wall: fixed panes outside, sliders and screens on the room side;
   - panes that meet lap only when on different tracks; screens exactly over the sliders.
 
+## Lessons from SS-02 (ST14, 1 พ.ย.)
+
+- Read the schedule rows one by one: the D3 hinge row held the leaf text, and the leaf size in the text disagreed with the
+  drawn dimension. Report both.
+- ST06 may slide an opening away from a column: take frame positions from the real opening, not the plan table.
+- A frame can stand inside its opening's bbox and still miss a member: count frame and sash pieces. A bbox never sees a
+  door head between its jambs or a divider.
+- Turn each leaf on its real pin up to its stop, with the lever tip, and test the frame too. A pin at the leaf corner lets
+  a door pass 170° through its own jamb. A butt hinge pin stands proud of the frame.
+- The stop must be reached first: a short stop lets the lever hit the wall.
+- Bound glass on all six sides and tie each pane to its sash plane; for an arch use the arch limit.
+- `drop_piece` removes the last piece appended: name the mutation after that piece.
+
 ## Glass and screens (31 ต.ค.)
 
 - **Glass is a thin refracting slab.** Principled with Transmission 1, IOR 1.52, roughness 0 (clear) or 0.30

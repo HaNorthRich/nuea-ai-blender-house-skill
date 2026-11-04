@@ -1,5 +1,7 @@
 # ST07 roof frame, covering, trims, fascia
 
+*SS-02's code is not in this repo; its file names (`ss02_*.py`) are from that job.*
+
 Read when modelling the roof steel, CPAC or metal-sheet covering, caps or fascia.
 
 ## โครงหลังคา (ST07, spec 29 ต.ค.; `examples/e42/scripts/e42_roof.py`)
@@ -108,3 +110,7 @@ Read when modelling the roof steel, CPAC or metal-sheet covering, caps or fascia
     load ignored the mutation, and the test "missed".
   - Booleans on objects in an **excluded** collection are not evaluated: the cuts silently did nothing in a
     headless run. Link the object and cutters to the scene collection while evaluating (`_cope`).
+- **Read the section before taking E42's rafter rule** (SS-02 1 พ.ย.; `scripts/ss02_roof.py`): its A-09 has the rafter underside on the eave soffit at the eave line, so a rafter passes 0.27 m over the wall plate on a stub post. Measure the layers off the section's vectors. The E42 rule would have dropped the ridge 19 cm.
+- **An L plan is six skeleton faces:** the wing's outer plane is the main roof's, so that hip does not exist. Roof height = min(planes, with max of the two planes at the valley).
+- **Without booleans:** cut each tube end on its own plane per vertex (`_cut_tube`). Faces stay closed and volume ÷ section still reads the centreline length.
+- **Scan steel pairs with a BVH on the outer skin drawn in 1.5 mm** (`check_roof_clash`): it found 4 real clashes that vertex rules missed, because a tube only has vertices at its ends.

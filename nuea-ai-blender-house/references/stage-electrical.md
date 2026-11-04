@@ -1,5 +1,7 @@
 # ST12 electrical: devices, circuits, conduit, wire
 
+*SS-02's code is not in this repo; its file names (`ss02_*.py`) are from that job.*
+
 Read when modelling lights, switches, sockets, the consumer unit, conduit, wire or the service main.
 
 ## ไฟฟ้า + ดวงโคม (ST12, spec 30 ต.ค.; `examples/e42/scripts/e42_elec.py`)
@@ -18,7 +20,7 @@ Read when modelling lights, switches, sockets, the consumer unit, conduit, wire 
 - **Conduit = the user's rules, read back from the model** (E42 `e42_conduit.py` router + `e42_conduit_check.py` +
   `e42_conduit_main.py`; spec `ST12_conduit_spec.md`, 30–31 ต.ค.). Lane rows, walk-order chains, CROSS points and
   "≤ 4 bends" were the rejected first design.
-  - **the user's rules:**
+  - **The user's rules:**
     - Conduits are clipped on the wall faces over the ceiling, stacked by height. Measure the bands first: E42 plaster band 3.29–3.45, steel wall plate 3.45–3.55.
     - No circuit runs back alongside itself.
     - Boxes sit on the wall, lid to the room, nothing in front of a lid. Real TOP 2×4 / 4×4 products, never entered through the lid.
@@ -115,3 +117,79 @@ Read when modelling lights, switches, sockets, the consumer unit, conduit, wire 
     360° pull box there forced a detour) stay looped.
 - **The rooms that stay looped use their old clearances** (reach, downlight-box spacing, hub keep-off). Using the
   box clearances everywhere moved geometry in rooms that never got a box.
+
+## SS-02 devices only (4 พ.ย.; `ss02_elec.py`)
+
+- When the user has not chosen the wiring method, grade, CU or AC, build the devices from the plans and list those questions. Don't route conduit on assumptions.
+- **Read the symbols from the sheet's vectors.** E-25 and E-26 are at A-04's scale (K 37.795 pt/m at 1:75). Only the origin moves, so find it from the grid lines. The sizes tell the symbols apart: a 0.22 square around a 0.132 one is the surface downlight, 0.16 rings are switches, 0.198 squares are sockets.
+- **A symbol stands a few cm off its wall.** Put the device on the nearest finished face found by rays along ±x and ±y. Check the wall side against a table typed in the check, so a socket that jumps to the next wall fails.
+- A plate goes on the last paint coat (primer + 2 coats = 3 coat steps out), or on the tile.
+- **Helper names:** the skill's `cpac_caps.py`, exec'd inside `ss02_roof_cover.py`, defines `_plate`. The loader's duplicate guard can't see it, and a `_plate` of your own breaks the roof caps.
+
+## SS-02 conduit (4 พ.ย.; `ss02_conduit_routes.py` tables, `ss02_conduit.py` build, `ss02_conduit_check.py` + `ss02_conduit_net.py` check, `test_st12b.py`)
+
+A designer's table of pieces (sharp 3D paths between nodes), every corner filleted at the radius. No router: in a 95 m² house one was not worth writing.
+
+- **Use the conduit the store sells, before routing.** Thai Watsadu's 1/2" is 20 mm (EAGLE EG20 / HACO EC20, wall 1.8, 2.90 m lengths), not
+  16 mm; boxes HACO Deco W111A 12 × 7 × 3.5 cm; flex HACO FX-20; clips HACO CC20 every 0.9 m (NEC 352.30). Moving 16 → 20 mm after routing
+  cost a full re-route (steps, lanes, humps, every test coordinate). The store's product pages first, with links; then the tables.
+- **Measure the real void before planning lanes.**
+  - The plaster stops at the ceiling, and the board, frame and wool stop at the plaster line.
+  - So above the ceiling there is a 17.5 mm gap along the bare brick. A 20 mm conduit runs on saddles 11 mm off the brick, over the wool.
+  - In the wall it is chased 3.5 mm into the brick (centre 6.5 mm off it) so the plaster still covers it; it steps from groove to saddle
+    between 2 cm under and 2.5 cm over the plaster top (a 4.5 mm offset), through a notch in the ceiling's edge.
+  - Lanes are 3.636 and 3.672 (36 mm apart) under the 3.70 wall top; humps over another run at ≥ 3.716.
+  - A 25 mm does not fit the gap. Split circuits so every chase and run is 1/2" (20 mm).
+- **Boxes on the band's top, their knockouts are lanes.**
+  - TOP 2×4 at 3.62–3.69, knockouts at 3.636 and 3.672.
+  - Traffic passes under a box at ≤ 3.60, or through it: two conduits share one box, one per knockout. Swap knockouts inside a box so the one that drops next is the lower one.
+- **Ordering rules that decide everything at a load centre:**
+  - A level run passing over a riser must be above that riser's whole bend. Risers turning one way take lanes that fall the further out they stand.
+  - CU home runs run level in the chase from their slot to a riser by the corner. Riser order equals slot order, and level heights rise with it.
+  - A device drop 4 cm from the CU blocks every home run (SW_B2). Move the device (say why in the spec) rather than fight it.
+- **Over the top of a free-top wall:**
+  - A riser bending over it must climb past the wall top first, or its bend cuts the band's corner.
+  - Bends side by side at the same radius always cross. Nest them at a bigger radius round the same centre, or keep them in planes ≥ 2 cm apart.
+- **A device near a room corner can't be looped after the corner bend.** It needs ≥ r + r + leg from the face; the sockets here needed 7–10 cm. Make it a run's end, or move it and flag it.
+- **Wire per piece needs one tree per circuit.**
+  - Shared conduits make the box graph cyclic.
+  - Book each piece's circuits in the table. A circuit that splits at a junction box gets branch ids (L1k, L1b) on one breaker.
+- **Flex:**
+  - Leave the box's bottom 4 cm off the wall, in front of the conduits under it. Lie on the C-line under the wool.
+  - Enter the light's top at a point clear of the frame (≤ 6 cm off centre).
+  - In a bath, step out over the cold-water header first.
+- **One breaker split into branches** (L1k, L1b, so each forms a tree) must share its L and N where the branches ride together.
+  - Map branches to breakers in the builder and restate the map in the checker; else the trunk books two L/N sets and a checker copying the split can't see it (a code review caught it).
+- **Checker lessons:**
+  - A bend's radius from three samples: neither the chord nor the shorter leg works.
+    - The chord misses a chamfer. The shorter leg reads two good bends 4 mm apart as R 0.05.
+    - Use curvature over a window: the turns within 3 cm either side, over the length they own (each leg capped at 3 cm). It is exact on arcs, and a 2-mitre chamfer fails.
+  - Under the ceiling a chased point must lie within the plaster depth of its wall: a run exposed in the room in front of the paint otherwise passes.
+  - A stretch over the wall tops must actually cross a wall (its plan line hits brick or concrete), not only be short.
+  - Read the take-off back from the meshes (grooves per end run, holes as back-to-back ends), and assert the build's numbers equal it.
+  - A synthetic case's miss path must raise a tag the suite doesn't expect ([synthetic-miss]).
+  - Clearance by distance only: the wall slices' normals don't all face out, and 1 cm samples can't enter a solid unseen.
+  - An "on the wall" limit needs its search reach longer than the limit. A 5 cm reach let a run 30 cm out pass.
+  - Tell bends from straights by segment length (arcs sampled at 1.5 cm). The point-next-to-a-bend test let a slanting chase pass.
+  - Synthetic cases with controls: an angled box entry, a run through a box, a lid blocked, running back alongside itself.
+- **Wire slack where a conductor ends or is spliced (15 cm), none where it passes a box unbroken (NEC 300.14).** E42's 30 cm at every piece end
+  over-counted 15–20 %.
+- **Outdoor and the lower carport roof (4 พ.ย.; the user: "วิเคราะห์และวางตำแหน่งให้เลย"):**
+  - A carport roof below the house ceiling: cross the dividing wall with a chase down the room face and ONE bend through the brick into the
+    carport's void (a hole). A box on the far face can't take it: the bend needs its radius (10.2 cm) of wall depth to come out square.
+  - To a device on the outside face of the wall that carries the ceiling (pump on L1, carport socket on L2K): an S through the wall's top,
+    two ~52° bends with 5 mm between, all of it inside the brick, into a chase down the outside face. Book it as a hole.
+  - Over the carport ceiling there are no walls: fix the boxes to the steel (posts' and rafters' side faces at web height, each box at its
+    own height) and keep runs within 0.20 m of the steel, clipped at each rafter. A spine along the posts' faces goes in at one end of each
+    post's box and out the other. A box entered and left at the same end doubles the circuit back alongside itself.
+  - The carport's walls stay plastered above its ceiling (they are the house's outside): check plaster in that void too.
+  - A device whose chase would cut a ground beam (under the house floor, on the plinth) goes up onto the brick: SO_CARPORT +0.35 → +1.20.
+  - A light right under its box (boxes beside the rafters over the lights): drop the flex straight down. Else move the drop within the
+    light's top until it is two bend radii from the box.
+  - The checker learns each of these as a rule plus a mutation: holes on bends only and as many as booked, steel supports, outside plaster.
+  - Give the checker its own table of which wall each hole goes through, or it only echoes the count the builder booked.
+  - Tie an exception to the sample next to the hole, not to "this piece has a hole": the second form quietly relaxed every chase on the piece.
+- **Headless loop when the live Blender has another file open:**
+  - Build a base once with `build_all.py` and its output set to `<scratchpad>/base.blend` (`E42_OUT` in the example's `build_all.py`).
+  - Then each iteration runs only `build_elec(); build_conduit()` on it (≈ 30 s).
+  - Look with a Workbench top render: an ortho camera whose clip start cuts at the void.

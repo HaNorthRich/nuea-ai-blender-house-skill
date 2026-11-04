@@ -1,5 +1,7 @@
 # ST06 walls and wall plate
 
+*SS-02's code is not in this repo; its file names (`ss02_*.py`) are from that job.*
+
 Read when modelling walls, plaster, beads, openings or the wall plate.
 
 ## ผนังและอะเส (ST06, spec 29 ต.ค.; `examples/e42/scripts/e42_walls.py`, its own file — e42_struct was past 800 lines)
@@ -41,3 +43,6 @@ Read when modelling walls, plaster, beads, openings or the wall plate.
   (the user saw solid bars: caps 18,688 mm² vs 1,034) while the volume still matched, so the selfcheck also reads the
   end-face area from the model (= pieces × kg_m / 7850). Look at a free end close up before reporting a profile.
 - Concrete cast against brick needs no formwork (tie column sides).
+- **A wall with arches or many openings is sliced in its own (u, z) plane** (SS-02 1 พ.ย.; `scripts/ss02_walls.py`): cut at every opening edge, tie edge and arc sample, stack what each slice holds, keep what is left as boxes or sloped hexahedra. Sample each arc to its own centre, or the last chord jumps the crown (a closure check of wall area minus openings found it: 0.027 m²).
+- **A selfcheck must demand the piece, not only judge the ones that exist.** SS-02 lost 35 of 294 whisker bars to a filter over the whole wall instead of the panel: 92 mutations passed and a pinned total froze the error. Type the expected rows per wall end, and read positions, not counts: a count can be right with the piece on the wrong corner.
+- Doors against a column or wall: grow the rough opening the other way, so the finished width still takes the frame.

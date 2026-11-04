@@ -1,5 +1,7 @@
 # ST09, ST10, ST13 primer and paint
 
+*SS-02's code is not in this repo; its file names (`ss02_*.py`) are from that job.*
+
 Read when modelling primer or paint coats, or counting buckets.
 
 ## ทาสีรองพื้น (ST09, spec 29 ต.ค.; `examples/e42/scripts/e42_paint.py`)
@@ -16,6 +18,14 @@ Read when modelling primer or paint coats, or counting buckets.
     - a face whose front is brick, concrete or more plaster is not seen;
     - a reveal splits at mid-depth to the rooms on its two sides.
 - Outside ceilings (soffit, porch) take the exterior primer (the user): split the ceiling rows by board type.
+
+- **SS-02 (1 พ.ย.):**
+  - Ray parity steps must clear float32: 1e-6 at x 10 returned the same face and flipped the answer. Use 1e-5.
+  - Sight lines at fixed heights cannot see how far a film runs: sample near floor and ceiling, near the plinth too.
+  - Drop up-facing skin tops at ceiling level before splitting reveals, or hidden strips land in the outside film.
+  - Pick the reveal's split axis from the wall depth; a crown face's normal does not show it.
+  - Rust paint includes the wall plates: count them with the roof steel.
+  - A carport slab sits above the ground: column skins there start at the slab, not the house floor.
 
 ## ทาสีจริงรอบที่ 1 (ST10, spec 29 ต.ค.; E42 `build_finish` in `e42_paint.py`)
 
@@ -72,3 +82,20 @@ Read when modelling primer or paint coats, or counting buckets.
   - After changing a shared geometry helper, rebuild every stage that uses it and diff its `report()` byte for byte.
 - Rebuilding walls needs the modules loaded only up to tiles. The conduit module's `_arc` shadows the one in
   `lipped_c`.
+
+## SS-02 laps and coat 1 (4 พ.ย.; `ss02_paint.py` `_unlapped`, `ss02_coat1.py`)
+
+- **Plaster skins lap.** A column's plaster lies over the end of a wall's skin; a sill's or head's plaster over the ends of a reveal skin. A centre probe misses it, so the primer ran 1.84 m² into solid. Cut every seen face by each plain 8-vertex box piece that stands on it (material in front, starting within the probe reach), and check 5 mm in from each film corner. Test pieces one by one: an object can mix box and sloped pieces.
+- **Coat 1 = the primer above the floor, less what tile, steps, risers, the floor finish and mouldings cover.** Check the inside walls geometrically against the primer, with the tile faces as typed in the tile stage's check (each face less its opening, plus the tile's depth at each end where it butts the next face). A hand total minus a hand total hid three errors that cancelled.
+- **Grout is a cover.** Pad tile boxes by the joint, but a floor's in plan only: padding up eats a 2 mm band of wall paint all round (0.24 m²).
+- **Coat 2 one-to-one:** match the films with a KD-tree under 0.01 mm. Rounded centre keys fail at rounding edges.
+- **Covers are convex pieces, not bounding boxes.** Cut a face by each cover piece's own face planes, oriented away from the piece's centre (face winding can be flipped). Skip a wedge's collapsed faces: a zero normal makes every point look like it lies on that face, and the cut gives up. Push the cover's faces that look back at the painted face (dot < −0.5, so sloped reveals too) back by the brush reach.
+- **Cut a moulding face by its own object's other pieces**, never by "everything except this object". Skipping the whole object and probing the centroid left every ledge under an upper tier bare (2.5 m² of SS-02's mouldings). Also cut it by the wall and plaster pieces, sloped ones included.
+- **Dense sample checks need care, or they flag good work:**
+  - Step 5 mm in along each axis of the face. On a long face the diagonal step lands on the edge.
+  - Drop a sample that isn't at least 2 mm inside every edge (acute mitres, sloped arch edges). Keep the grid and edge samples off round numbers, because cover edges sit on them.
+  - Count a sample as covered when a solid lies 0.3 mm in front (a curved moulding's wedge can be thinner than 1 mm), or 1.5–2.5 mm beside it (joints, edges).
+  - When the film ray misses, retry it 0.3 mm aside: a ray on the seam of two films slips between them.
+- **Horizontal sight lines never see sills, heads or ledges.** Check those by sampling the primer itself: wherever no cover stands within reach, coat 1 must lie on it. Add an area cap on the outside walls (coat ≤ primer).
+- **Reach back only with the faces that lie over the painted face** (dot < −0.9). Pushing a more oblique face out along its own normal widens the cover sideways and cuts a neighbouring slice's face; the plane shift is not the swept volume. Probe offsets for "covered beside" must lie in the face's own plane (`n.orthogonal()`), not along world axes, or every sample on a sloped face dips into its own solid and is skipped.
+- **A "no film laid twice" rule must ignore where a ring starts and which way it runs.** Two source faces cut to the same region give the same outline from different start corners. Copies added before the cover cut also come out identical wherever mouldings box a region in, so a mutation for an area cap has to add its extra films after the cut (patch `_film_mesh`).

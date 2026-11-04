@@ -1,5 +1,7 @@
 # ST11 steps, waterproofing, screed, tiles, skirting
 
+*SS-02's code is not in this repo; its file names (`ss02_*.py`) are from that job.*
+
 Read when modelling floor or wall tiles, steps, waterproofing or skirting.
 
 ## ปูกระเบื้อง (ST11, spec 29 ต.ค.; `examples/e42/scripts/e42_tiles.py`)
@@ -32,3 +34,21 @@ Read when modelling floor or wall tiles, steps, waterproofing or skirting.
 ## Room seeds
 
 - **Seed points:** a room seed on a column grid line makes the rect scan stop at the column (E42 living room 14 cm short: ceiling, paint and floor all wrong). Seed between grid lines, and keep anything placed "at the room centre" (the hatch) at a fixed point.
+
+## SS-02 (4 พ.ย.; `ss02_tiles.py`)
+
+- **A riser is a tile on a bed**, the tread tile reaching over it. The top riser of a stair into a porch is covered by the porch tiles: a tile-only strip past the porch bed (`nosing`), else a 2 cm lip runs the stair's width.
+- **A door frame that stands proud of the wall** (SS-02 D3, 1.25 cm) over a lower floor leaves a gap under its foot. Put the riser in front of the frame, its bed back to the wall, and run the upper floor's tile over it.
+- **A door in a room's corner** leaves the side wall's 15 mm corner strip bare below the head: tile it as its own face, a joint short of the wall's tiles.
+- **Cut a floor by every obstacle over its own span** (bed bottom to tile top), not at one height.
+- **Checks a reviewer found missing:**
+  - Coverage grown by the joint passes joints of 0 to 4 mm. Check each tile side instead: it ends its bed, meets another piece of the same grid cell (union ≤ tile size), or faces the next tile exactly one joint on, or the bed ends there (a perimeter joint at a wall).
+  - No two finish boxes (tiles, beds, risers, steps, screed) share volume.
+  - Read the step risers from the model: under each nosing, from the tread below to top − t, covered above, no gap along the width.
+  - Check a wall's bottom row at every sample, not as one minimum per face.
+- **Bed area:** a standing bed (behind a riser) counts by its face. Tell standing from lying by height (> 2 cm), not by the smallest side: a lying bed narrower than 1 cm would otherwise count its 1 cm edge.
+- **A reviewer's second round:**
+  - Test "a tile over each riser top" every 5 cm. One point per riser passes a nosing that covers only half.
+  - The joint rule's "same tile, two pieces" exemption must bound both axes. Otherwise a strip laid on its own grid passes as part of the next tile.
+  - A riser's bed runs up to the tile above it, except under a jamb's foot.
+  - All faces of one bath share one tile row origin (the lowest floor), so the joints run on round the corners.
