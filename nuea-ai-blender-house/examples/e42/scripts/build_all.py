@@ -29,6 +29,19 @@ BUILD_STAGES = (   # (not STAGES: e42_struct has one, and every module shares th
     ("ST13 paint coat 2", build_coat2, selfcheck_coat2),
     ("ST14 doors, windows, aluminium", build_units, selfcheck_units),
 )
+def _drop_factory_cube():
+    """--factory-startup leaves Blender's default 2 m cube at the origin, inside the house's front corner. Headless runs only,
+    so a cube in an open session of the user's own is never touched."""
+    cube = bpy.data.objects.get("Cube")
+    if not bpy.app.background or cube is None or cube.type != "MESH" or len(cube.data.vertices) != 8:
+        return
+    mesh = cube.data
+    bpy.data.objects.remove(cube)
+    if mesh.users == 0:
+        bpy.data.meshes.remove(mesh)
+
+
+_drop_factory_cube()
 t0 = time.time()
 for name, build, check in BUILD_STAGES:
     build()
