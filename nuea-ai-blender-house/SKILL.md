@@ -297,13 +297,21 @@ CAD drawings (7b), SketchUp (7c), a site plan (7d): `references/visual-extras.md
 - [ ] `bpy.ops.file.pack_all()` then save, so textures travel with the `.blend`
 - [ ] reply lists file paths, what was assumed (dimensions read from images, fence/plot, tile profile) and limits
   (no cars, box furniture); sales images need the label "ภาพจำลองเพื่อการโฆษณา"
-- [ ] BOQ from this model: measure the saved .blend headless (keep the object names above)
+- [ ] BOQ from this model: measure the saved .blend headless (keep the object names above); the companion skill
+  `nuea-ai-boq-takeoff`, when the user has it, does this and builds the workbook
 
 ## Workflow B: construction model, stage by stage
 
 The model is the job site in miniature: every piece to its product's drawing, built in construction order, so what
 is read from it is what gets ordered (a take-off script measures it headless). Reference implementation: E42 บ้านทรงประหยัด 42 ตร.ม.
 (28–31 ต.ค. 69). Read `references/working-economy.md` and `references/construction-method.md` before the first stage.
+
+**Hand-over to a BOQ.** The companion skill `nuea-ai-boq-takeoff` turns this model into a priced workbook. It reads
+each stage's quantity table first and the saved `.blend` second, so keep three things fixed: collections named
+`<PROJ> STnn <name>`; one `STnn_<name>_spec.md` per stage beside the `.blend`; and at the end of every spec a table
+headed `## ปริมาณ` with the columns รายการ · ปริมาณ · หน่วย · นับจากอะไร (one row per thing that is bought or
+paid for: concrete by pour, rebar by bar size in metres and in 10 m bars, bricks, tiles, pipes by size, points by
+type). Quantities that changed in a later stage are corrected in the stage that owns them, not only in the later spec.
 
 **Cost control without losing detail** (SS-02 measured 3,139 turns and 1.7 B cache-read tokens in one session): one stage per
 session with its spec as the handoff · drawings read once into `FACTS.md` · real product sizes before any route · `probe.py`
@@ -333,7 +341,7 @@ Per stage:
 4. **Mutations.** One per rule, each caught by its own message, clean controls passing, undo verified. Done when the
    suite reports nothing missed, and every suite whose module you touched still passes (whole suites once, at the close).
 5. **Close.** Review the diff, back up the scripts (an old .blend is rebuilt from them, don't keep copies), save, log the
-   stage in its spec file with a handoff for the next session, report in Thai with the quantities and what was assumed,
+   stage in its spec file with its `## ปริมาณ` table and a handoff for the next session, report in Thai with the quantities and what was assumed,
    then stop for the user's check and start the next stage in a fresh session.
 
 ## Blender shortcuts

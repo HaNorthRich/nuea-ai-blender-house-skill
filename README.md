@@ -157,6 +157,20 @@ E42_OUT="$HOME/e42_house.blend" "<BLENDER>" -b --factory-startup --python-exit-c
 **เคล็ดลับให้ประหยัด token:** ผมแนะนำให้ทำ**ขั้นละ session** แล้วเปิด session ใหม่ทุกขั้นครับ ไฟล์สเปกของขั้นที่แล้วจะเป็นตัวส่งต่อให้ขั้นถัดไป
 กติกาที่วัดจากงานจริงอยู่ใน [`references/working-economy.md`](nuea-ai-blender-house/references/working-economy.md)
 
+## ต่อยอด · เอาโมเดลไปถอด BOQ
+
+โมเดลก่อสร้าง (แบบที่ 2) ที่ปั้นด้วย Skill นี้ เอาไปถอด BOQ ต่อได้เลยครับ เพราะทุกขั้นจะจดปริมาณของตัวเองไว้ในไฟล์ `STnn_..._spec.md` ข้างไฟล์โมเดล
+ตั้งแต่คอนกรีต เหล็กเสริมทีละเส้น อิฐ กระเบื้องหลังคา ไปจนถึงท่อและสายไฟ
+
+ตัวที่จะมารับช่วงต่อคือ **Skill ถอด BOQ ของช่อง nuea.ai** ซึ่งจะเรียงปริมาณพวกนี้เป็นแถว BOQ ทีละหมวดงาน พร้อมสูตรรวมราคา
+แล้วออกเป็นไฟล์ที่เปิดได้ทั้งใน GridCraft (โปรแกรมตารางคำนวณฟรี) และ Excel วิธีรับอยู่ในคลิป EP7 ของช่องครับ กดติดตาม nuea.ai ไว้ได้เลย
+
+ถ้าตั้งใจจะถอด BOQ ต่อ ตอนปั้นให้บอก Claude ไว้ตั้งแต่ต้นแบบนี้ครับ
+
+```
+ปั้นบ้านหลังนี้แบบโมเดลก่อสร้าง ทีละขั้น และจดปริมาณทุกขั้นไว้ให้ครบ เพราะจะเอาไปถอด BOQ ต่อ
+```
+
 ## รวม prompt ไว้ก๊อปไปใช้
 
 | อยากทำ | พิมพ์บอก Claude |
@@ -181,7 +195,9 @@ E42_OUT="$HOME/e42_house.blend" "<BLENDER>" -b --factory-startup --python-exit-c
 | ขนาดห้องผิดจากแปลน | แก้ที่ตารางห้องที่ Claude เขียนให้ก่อนปั้น (แบบที่ 1 ข้อ 2) จะเร็วกว่าแก้ทีหลังครับ |
 | token หมดเร็ว | ทำขั้นละ session และเปิด session ใหม่ทุกขั้นครับ |
 
-## อัปเดตล่าสุด (9 พ.ย. 2569)
+## อัปเดตล่าสุด (11 พ.ย. 2569)
+
+**11 พ.ย. 2569:** โมเดลก่อสร้างส่งต่อให้ Skill ถอด BOQ ของช่อง nuea.ai ได้ (ดูหัวข้อ "ต่อยอด · เอาโมเดลไปถอด BOQ") · ทุกขั้นปิดท้ายไฟล์สเปกด้วยตารางปริมาณรูปแบบเดียวกัน
 
 **9 พ.ย. 2569:** README มีรูปและวิธีใช้ทีละขั้น · บ้านตัวอย่าง E42 ไม่มีลูกบาศก์ค้างที่มุมหน้าบ้านแล้ว (ปริมาณเท่าเดิม)
 
@@ -260,6 +276,9 @@ Easiest install: send this repository's link to Claude Code and ask it to instal
 `claude mcp add --scope user blender "$(command -v uvx)" mcp-for-blender` (Windows: the `C:\…\uvx.exe` path that
 `where uvx` prints). Claude Code needs a paid Claude plan
 (Pro and up) or an API key. Quantities need a qualified check before ordering; structural design needs a licensed engineer.
+
+**Update (11 Nov 2026):** a construction model now hands over to nuea.ai's BOQ take-off skill: every stage spec ends with
+a quantity table in one fixed shape, which that skill reads first (Thai section "ต่อยอด · เอาโมเดลไปถอด BOQ").
 
 **Update (9 Nov 2026):** a step-by-step README with pictures; the E42 example no longer leaves Blender's default cube in
 the house's front corner (same quantities).
