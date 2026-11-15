@@ -1,6 +1,7 @@
 # nuea.ai Blender House · Skill ปั้นบ้าน 3D ใน Blender ด้วย Claude
 
-> **For Claude and other AI agents:** to install this skill, follow [INSTALL.md](INSTALL.md)
+> **For Claude, Codex and other AI agents:** read [AGENTS.md](AGENTS.md) first. It says what this repository is, what
+> to install, and which request maps to which step. To install or update the skill, follow [INSTALL.md](INSTALL.md)
 > (raw: https://raw.githubusercontent.com/HaNorthRich/nuea-ai-blender-house-skill/main/INSTALL.md).
 
 <p align="center">
@@ -40,6 +41,10 @@ Skill ตัวนี้ผมทำขึ้นมาจากคลิป EP4 
    - พิมพ์ `เช็กสถานะ Blender` ถ้า Claude ตอบเวอร์ชันของ Blender ได้ ก็แปลว่าพร้อมใช้แล้วครับ
 
 อยากลงเองไม่ผ่าน Claude ดูหัวข้อ [ติดตั้งเอง](#ติดตั้งเอง) ด้านล่างได้เลยครับ
+
+**ใช้ Codex ก็ได้ครับ** clone repo แล้วเปิด Codex ในโฟลเดอร์นั้น Codex จะเห็น Skill ทันทีโดยไม่ต้องติดตั้ง
+(repo มีโฟลเดอร์ `.agents/skills/` ที่ Codex อ่านเอง) ถ้าอยากใช้ได้ทุกโฟลเดอร์ พิมพ์ `ติดตั้ง Skill นี้ให้หน่อย`
+แล้ว Codex จะลงไว้ที่ `~/.agents/skills` และต่อ MCP ด้วยคำสั่ง `codex mcp add` ตาม [INSTALL.md](INSTALL.md) ครับ
 
 ## ขั้นที่ 1 · ลองบ้านตัวอย่างก่อน (ประมาณ 2 นาที)
 
@@ -248,6 +253,9 @@ cp -R nuea-ai-blender-house-skill/nuea-ai-blender-house ~/.claude/skills/
 uvx mcp-for-blender install-addon
 claude mcp add --scope user blender "$(command -v uvx)" mcp-for-blender   # (path เต็มของ uvx: แอปบนเดสก์ท็อปหาเจอด้วย)
 # Windows: ใช้ path ที่ `where uvx` พิมพ์ (C:\…\uvx.exe) แทน "$(command -v uvx)"
+
+# ใช้ Codex: ข้อ 1 คัดลอกไป ~/.agents/skills แทน ~/.claude/skills และข้อ 2 ใช้
+# codex mcp add blender -- "$(command -v uvx)" mcp-for-blender
 ```
 
 เปิด Blender แล้วเปิด add-on และกด Start MCP Server จากนั้นเปิด Claude Code ใหม่ แล้วสั่งว่า "เช็กสถานะ Blender"

@@ -50,11 +50,14 @@ References (read when the pointer's condition holds):
 | `references/stage-openings.md` | door sets, aluminium windows/doors, glass, screens |
 | `references/visual-extras.md` | furniture/plant/car assets, landscape, CAD drawings, SketchUp hand-off, a site plan |
 
-Load both into text blocks once per .blend so the file stays self-contained:
+Load both into text blocks once per .blend so the file stays self-contained. `S` is the absolute path of this skill's
+own `scripts/` folder, beside this SKILL.md: `~/.claude/skills/nuea-ai-blender-house/scripts/` for an install in
+Claude Code; for Codex `~/.agents/skills/nuea-ai-blender-house/scripts/`, or `<clone>/nuea-ai-blender-house/scripts/`
+when it runs in a clone. Write the real path in, with its trailing `/`, since the code runs inside Blender:
 
 ```python
 import bpy, os
-S = os.path.expanduser("~/.claude/skills/nuea-ai-blender-house/scripts/")
+S = os.path.expanduser("~/.claude/skills/nuea-ai-blender-house/scripts/")   # this skill's scripts/ folder
 for n, f in (("house_helpers", "helpers.py"), ("house_roof", "roof.py")):
     t = bpy.data.texts.get(n) or bpy.data.texts.new(n); t.from_string(open(S + f).read())
 PROJ = "P-2389"   # collection prefix
