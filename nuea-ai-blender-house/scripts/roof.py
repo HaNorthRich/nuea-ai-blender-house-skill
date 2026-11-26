@@ -198,7 +198,10 @@ def cpac_tiles(base="Roof_Hip", pitch_u=0.30, lap=0.32, wave=0.035, step=0.025, 
         first_face = len(bm.faces)
         V = [src.vertices[i].co.copy() for i in poly.vertices]
         n = poly.normal.copy()
-        e = (V[1] - V[0]).normalized()
+        # courses run along the eave = the plane's level line. The face's first edge can be a hip: then every course
+        # ran diagonally (SS-02 north / west planes, found on the elevations 20 Nov 2026)
+        e = Vector((-n.y, n.x, 0.0))
+        e = e.normalized() if e.length > 1e-6 else (V[1] - V[0]).normalized()   # a flat face: any edge
         if e.x < -1e-6 or (abs(e.x) <= 1e-6 and e.y < 0):
             e = -e
         up = n.cross(e).normalized()
@@ -341,12 +344,19 @@ def roof_caps(base="Roof_Hip", radius=0.11, lift=0.05, hip_pullback=0.25, others
 
 
 def _faces(name):
-    """World-space faces of a *_Hip roof: (verts, normal, eave dir e, up-slope dir up). First edge = eave."""
+    """World-space faces of a *_Hip roof: (verts, normal, eave dir e, up-slope dir up). Verts start at the eave."""
     o = bpy.data.objects[name]
     out = []
     for p in o.data.polygons:
         V = [o.matrix_world @ o.data.vertices[i].co for i in p.vertices]
         n = (o.matrix_world.to_3x3() @ p.normal).normalized()
+        if n.z < 0:   # a face pointing down: roof_frame hangs members along -n; reversed V stays counter-clockwise round n
+            n, V = -n, V[::-1]
+        # roof_frame reads V[0]->V[1] as the eave. A face can start at a hip or the ridge (another builder, a
+        # flipped face): then it laid no battens (26 Nov 2026). Start at the lowest level edge; none = as given
+        zmin = min(q.z for q in V)
+        k = next((i for i in range(len(V)) if max(V[i].z, V[(i + 1) % len(V)].z) < zmin + 1e-4), 0)
+        V = V[k:] + V[:k]
         e = (V[1] - V[0]).normalized()
         up = n.cross(e).normalized()
         if up.z < 0:
@@ -690,3 +700,42 @@ def carport_classic(name, x_low, x_high, y0, y1, z_high, posts, slope_deg=3.0, f
           f"(fillets lower it to {zf - fillet_r:.2f} at the columns)")
     out["levels"] = {"ceiling": zc, "fascia_bottom": zf, "fascia_top": zt, "sheet_high": z_high, "sheet_low": zs(x_low)}
     return out
+
+
+def roof_selftest():
+    """roof_frame gives the same frame whatever corner a roof face's vertex list starts at, and for a face that points
+    down (26 Nov 2026: a face starting at a hip got no battens). Builds and removes _selftest_* objects; under a second."""
+    had = set(bpy.data.materials.keys())
+
+    def frame(box, r=0, flip=False):
+        hip_roof(*box, ze=3.0, pitch=25, name="_selftest_roof", c="_selftest")
+        me = bpy.data.objects["_selftest_roof_Hip"].data
+        if r or flip:   # the same faces, each starting r corners later (a hip or the ridge first), or reversed
+            polys, co = [list(p.vertices) for p in me.polygons], [v.co.copy() for v in me.vertices]
+            bm = bmesh.new()
+            vs = [bm.verts.new(q) for q in co]
+            for f in polys:
+                f = f[r % len(f):] + f[:r % len(f)]
+                bm.faces.new([vs[i] for i in (f[::-1] if flip else f)])
+            bm.to_mesh(me)
+            bm.free()
+        assert all((p.normal.z < 0) == flip for p in me.polygons)
+        return [sorted(tuple(round(x, 4) for x in o.matrix_world @ v.co) for v in o.data.vertices)
+                for o in roof_frame("_selftest_roof_Hip", wall_top=2.8, c="_selftest")]
+
+    try:
+        for box in ((0, 0, 10, 7), (0, 0, 7, 10), (0, 0, 8, 8)):   # ridge along x, ridge along y, pyramid
+            want = frame(box)
+            assert want[0] and want[1], f"no frame or no battens on {box}"
+            for r in range(4):
+                for flip in (False, True):
+                    if r or flip:
+                        assert frame(box, r, flip) == want, f"roof_frame changed: {box}, start +{r}, flipped {flip}"
+    finally:
+        for part in ("Eave", "Hip", "Frame", "Battens"):
+            replace_obj("_selftest_roof_" + part)
+        if "_selftest" in bpy.data.collections:
+            bpy.data.collections.remove(bpy.data.collections["_selftest"])
+        for n in set(bpy.data.materials.keys()) - had:   # only the ones this test made
+            bpy.data.materials.remove(bpy.data.materials[n])
+    return "roof selftest ok"
